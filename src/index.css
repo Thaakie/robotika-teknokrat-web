@@ -125,11 +125,23 @@
 
 @media (max-width: 640px) {
   .hero-title {
-    font-size: 12vw !important;
-    line-height: 1.1 !important;
+    font-size: 14vw !important;
+    line-height: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
   }
   
   .hero-title span {
     transform: none !important;
+    translate: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-right: 7px !important; /* Keep padding for italic lean */
+  }
+
+  #home {
+    padding-top: 120px !important;
   }
 }
