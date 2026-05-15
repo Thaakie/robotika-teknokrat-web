@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 
 export const Hero = () => {
   return (
-    <section id="home" className="relative min-h-screen flex flex-col items-center justify-center pt-39 pb-20 overflow-hidden bg-brand-navy">
+    <section id="home" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-32 pb-20 overflow-hidden bg-brand-navy">
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -26,7 +26,7 @@ export const Hero = () => {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="text-center"
           >
-            <h1 className="text-[14vw] lg:text-[10vw] font-[1000] italic leading-[0.75] tracking-tighter text-white uppercase flex flex-col items-center">
+            <h1 className="hero-title text-[14vw] lg:text-[10vw] font-[1000] italic leading-[0.75] tracking-tighter text-white uppercase flex flex-col items-center">
               <span className="block translate-x-[-5%]">Teknokrat</span>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-white translate-x-[5%]">KRAKATAU</span>
               <span className="block translate-x-[-2%]">TEAM</span>

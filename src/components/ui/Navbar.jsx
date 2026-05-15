@@ -46,11 +46,33 @@ export const Navbar = () => {
       navigate("/");
       setTimeout(() => {
         const elem = document.getElementById(targetId);
-        if (elem) elem.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+        if (elem) {
+          if (window.lenis) {
+            window.lenis.scrollTo(elem, { offset: -100 });
+          } else {
+            const offset = 100;
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = elem.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+          }
+        }
+      }, 300);
     } else {
       const elem = document.getElementById(targetId);
-      if (elem) elem.scrollIntoView({ behavior: "smooth" });
+      if (elem) {
+        if (window.lenis) {
+          window.lenis.scrollTo(elem, { offset: -100 });
+        } else {
+          const offset = 100;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = elem.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        }
+      }
     }
     setIsMobileMenuOpen(false);
   };
@@ -186,8 +208,8 @@ export const Navbar = () => {
 
         </div>
 
-        <button className="lg:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        <button className="lg:hidden text-white relative z-50 p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </Container>
 
@@ -197,51 +219,37 @@ export const Navbar = () => {
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
-            className="fixed inset-0 z-40 bg-brand-navy lg:hidden p-8 pt-24 overflow-y-auto"
+            className="fixed inset-0 h-[100dvh] z-40 glass-mobile-menu lg:hidden p-8 pt-32 overflow-y-auto"
           >
-            <div className="flex flex-col gap-6">
-              {navLinks.map((link) => (
-                <div key={link.name} className="space-y-4">
-                  <button onClick={(e) => link.dropdown ? null : scrollToSection(e, link)} className="text-2xl font-black text-white uppercase tracking-tighter text-left w-full">
-                    {link.name}
-                  </button>
-                  
-                  {link.dropdown && (
-                    <div className="pl-6 border-l-2 border-brand-primary/20 space-y-4">
-                       {link.name === "About" ? (
-                         link.data.map(item => (
-                           item.isPage ? (
-                             <Link key={item.name} to={item.href} className="block text-brand-gray font-bold" onClick={() => setIsMobileMenuOpen(false)}>{item.name}</Link>
-                           ) : (
-                             <a key={item.name} href={item.href} className="block text-brand-gray font-bold" onClick={(e) => { scrollToSection(e, item); setIsMobileMenuOpen(false); }}>{item.name}</a>
-                           )
-                         ))
-                       ) : link.name === "Division" ? (
-                         ACTIVE_DIVISIONS.map(div => (
-                           <Link key={div.id} to={`/division/${div.id}`} className="block text-brand-gray font-bold" onClick={() => setIsMobileMenuOpen(false)}>{div.name}</Link>
-                         ))
-                       ) : (
-                         ACHIEVEMENTS.map(yearGroup => (
-                           <div key={yearGroup.year} className="space-y-2">
-                              <p className="text-[10px] font-black text-brand-primary uppercase tracking-widest">{yearGroup.year} WINNERS</p>
-                              <div className="space-y-1">
-                                {yearGroup.categories.map(cat => (
-                                  <div key={cat.id}>
-                                    <p className="text-[9px] font-bold text-white/50">{cat.id}</p>
-                                    {cat.items.map((item, idx) => (
-                                      <p key={idx} className="text-xs text-brand-gray">{item.title}</p>
-                                    ))}
-                                  </div>
-                                ))}
-                              </div>
-                           </div>
-                         ))
-                       )}
-                    </div>
+            <div className="flex flex-col gap-8 pt-10">
+              {[
+                { name: "Home", href: "#home" },
+                { name: "Achievement", href: "#achievement" },
+                { name: "Division", href: "#division" },
+                { name: "Creativity", href: "#creativity" },
+                { name: "Organization", href: "/organization", isPage: true },
+                { name: "Gallery", href: "#gallery" },
+              ].map((link) => (
+                <div key={link.name}>
+                  {link.isPage ? (
+                    <Link 
+                      to={link.href} 
+                      className="text-4xl font-black text-white uppercase tracking-tighter hover:text-brand-primary transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a 
+                      href={link.href} 
+                      className="text-4xl font-black text-white uppercase tracking-tighter hover:text-brand-primary transition-colors"
+                      onClick={(e) => { scrollToSection(e, link); setIsMobileMenuOpen(false); }}
+                    >
+                      {link.name}
+                    </a>
                   )}
                 </div>
               ))}
-
             </div>
           </motion.div>
         )}
