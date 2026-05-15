@@ -8,7 +8,7 @@ export const Hero = () => {
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000" 
+          src="/HEROIMAGE.jpeg" 
           alt="Team Background" 
           className="w-full h-full object-cover opacity-30 grayscale contrast-125"
         />
