@@ -11,9 +11,7 @@ export const SubDivisionPage = () => {
   const division = ALL_DIVISIONS.find(d => d.id === id);
   const subDivision = division?.subdivisions.find(s => s.id === subId);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+
 
   if (!division || !subDivision) return <div className="min-h-screen bg-brand-navy flex items-center justify-center text-white">Sub-division not found</div>;
 

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "./Container";
-import { Button } from "./Button";
-import { ChevronDown, Menu, X, Rocket, Cpu, ChevronRight } from "lucide-react";
+
+import { ChevronDown, Menu, X, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { ACTIVE_DIVISIONS, INACTIVE_DIVISIONS } from "../../data/divisions";
 import { ACHIEVEMENTS } from "../../data/achievements";
@@ -64,22 +64,22 @@ export const Navbar = () => {
     >
       <Container className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center overflow-hidden p-1.5 border border-white/5">
+              <img src="/TeknokratLogo.png" alt="" className="w-full h-full object-contain" />
+            </div>
+            <p className="text-[10px] hidden lg:block text-brand-gray font-bold uppercase tracking-widest leading-tight">Universitas Teknokrat<br/>Indonesia</p>
+          </div>
+          <div className="h-8 w-px bg-white/10 mx-2" />
           <Link to="/" className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center text-white group-hover:rotate-12 transition-transform">
-              <Cpu size={24} />
+            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white group-hover:rotate-12 transition-transform overflow-hidden p-1.5 border border-white/5">
+              <img src="/RoboticLogo.png" alt="" className="w-full h-full object-contain" />
             </div>
             <div className="hidden sm:block">
-              <p className="text-sm font-bold leading-tight text-white">ROBOTIKA</p>
-              <p className="text-xs text-brand-gray">TEKNOKRAT</p>
+              <p className="text-sm font-bold leading-tight text-white uppercase">Robotika</p>
+              <p className="text-[10px] text-brand-gray uppercase tracking-widest font-bold">Teknokrat</p>
             </div>
           </Link>
-          <div className="h-8 w-px bg-white/10 mx-2" />
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
-              <Rocket size={16} className="text-brand-yellow" />
-            </div>
-            <p className="text-[10px] hidden lg:block text-brand-gray font-medium uppercase tracking-wider">Universitas Teknokrat<br/>Indonesia</p>
-          </div>
         </div>
 
         <div className="hidden lg:flex flex-row items-center gap-6 ml-auto">
@@ -107,7 +107,7 @@ export const Navbar = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className={cn(
-                        "absolute top-full left-0 mt-2 glass rounded-[20px] p-6 shadow-2xl overflow-hidden",
+                        "absolute top-full right-0 mt-2 glass rounded-[20px] p-6 shadow-2xl overflow-hidden",
                         link.name === "Achievement" ? "w-[480px]" : "w-64"
                       )}
                     >
@@ -184,8 +184,6 @@ export const Navbar = () => {
             </div>
           ))}
 
-          <div className="h-6 w-px bg-white/10 mx-2" />
-          <Button variant="accent" size="sm" className="rounded-full px-6 text-[10px] uppercase font-black tracking-widest">Join Team</Button>
         </div>
 
         <button className="lg:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -243,9 +241,7 @@ export const Navbar = () => {
                   )}
                 </div>
               ))}
-              <div className="pt-8 border-t border-white/10 mt-4">
-                <Button variant="accent" className="w-full py-4 rounded-2xl font-black uppercase tracking-widest">Join Our Team</Button>
-              </div>
+
             </div>
           </motion.div>
         )}

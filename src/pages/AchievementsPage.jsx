@@ -89,32 +89,6 @@ export const AchievementsPage = () => {
             </div>
           ))}
         </div>
-
-        {/* Global Stats / Summary */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="mt-32 glass p-12 rounded-[20px] border-brand-primary/10 text-center relative overflow-hidden"
-        >
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-brand-primary/5 rounded-full blur-[100px] pointer-events-none" />
-          <h2 className="text-3xl font-black text-white uppercase tracking-tight mb-4">Continuing the Excellence</h2>
-          <p className="text-brand-gray max-w-xl mx-auto mb-12">
-            Every trophy represents thousands of hours of research, development, and team synergy. We are dedicated to maintaining our position as the leading robotics team in Lampung.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-             {[
-               { label: 'Total Awards', value: '50+' },
-               { label: 'National Wins', value: '12' },
-               { label: 'Regional Wins', value: '28' },
-               { label: 'Divisions', value: '6' }
-             ].map((stat, i) => (
-               <div key={i}>
-                 <p className="text-4xl font-black text-white mb-1">{stat.value}</p>
-                 <p className="text-xs font-bold text-brand-primary uppercase tracking-widest">{stat.label}</p>
-               </div>
-             ))}
-          </div>
-        </motion.div>
       </Container>
     </div>
   );

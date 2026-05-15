@@ -8,11 +8,16 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center text-white">
-                <Cpu size={24} />
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center overflow-hidden p-1 border border-white/5">
+                  <img src="/TeknokratLogo.png" alt="Teknokrat" className="w-full h-full object-contain" />
+                </div>
+                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center overflow-hidden p-1 border border-white/5">
+                  <img src="/RoboticLogo.png" alt="Robotic" className="w-full h-full object-contain" />
+                </div>
               </div>
-              <h3 className="text-xl font-black text-white">ROBOTIKA <br/><span className="text-brand-primary text-sm">TEKNOKRAT</span></h3>
+              <h3 className="text-lg font-black text-white leading-tight uppercase">ROBOTIKA<br/><span className="text-brand-primary text-xs">TEKNOKRAT</span></h3>
             </div>
             <p className="text-brand-gray text-sm leading-relaxed mb-6">
               Leading the innovation in competitive robotics and autonomous systems at Universitas Teknokrat Indonesia.

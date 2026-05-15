@@ -16,8 +16,11 @@ const DivisionIcon = ({ name, size = 24 }) => {
 
 export const Division = () => {
   return (
-    <AnimatedSection id="division" className="py-24 relative">
+    <AnimatedSection id="division" className="py-24 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-1/3 h-1/3 hero-gradient -z-10" />
+      {/* Section Transitions */}
+      <div className="absolute top-0 left-0 w-full h-[20vh] bg-gradient-to-b from-brand-navy to-transparent z-0 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-[20vh] bg-gradient-to-t from-brand-navy to-transparent z-0 pointer-events-none" />
       <Container>
         <SectionTitle 
           title="Operation Divisions" 

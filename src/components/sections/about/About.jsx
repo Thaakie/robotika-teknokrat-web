@@ -11,11 +11,11 @@ export const About = () => {
     offset: ["start end", "end start"]
   });
 
-  // Background color transition from Navy (#0B1026) to a slightly lighter Blue (#1B1F8A/10)
+  // Background color transition from Brand Navy (#02041a) to a slightly lighter Blue
   const background = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
-    ["#0B1026", "#0f172a", "#0B1026"]
+    ["#02041a", "#05082a", "#02041a"]
   );
 
   return (
@@ -24,8 +24,9 @@ export const About = () => {
       style={{ background }}
       className="py-32 relative overflow-hidden transition-colors duration-1000"
     >
-      {/* Top Gradient Overlay */}
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#0B1026] to-transparent z-0 pointer-events-none" />
+      {/* Top and Bottom Gradient Overlays */}
+      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#02041a] to-transparent z-0 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-[30vh] bg-gradient-to-t from-[#02041a] to-transparent z-0 pointer-events-none" />
       
       <Container className="relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">

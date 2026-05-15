@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 
 export const Hero = () => {
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-[#02040a]">
+    <section id="home" className="relative min-h-screen flex flex-col items-center justify-center pt-39 pb-20 overflow-hidden bg-brand-navy">
       {/* Full-Screen Background Image Layer */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -13,8 +13,8 @@ export const Hero = () => {
           className="w-full h-full object-cover opacity-30 grayscale contrast-125"
         />
         {/* Overlays for depth and readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#02040a]/80 via-transparent to-[#0B1026]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(27,31,138,0.2)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-transparent to-brand-navy" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(9,8,123,0.2)_0%,transparent_70%)]" />
       </div>
 
       <Container className="relative z-10">
@@ -42,8 +42,8 @@ export const Hero = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 to-transparent pointer-events-none" />
             <p className="text-sm md:text-lg font-medium text-brand-gray tracking-wide relative z-10 leading-relaxed">
-              Universitas Teknokrat Indonesia's premier student-led robotics organization 
-              shaping the next generation of engineers through competitive excellence.
+              Leading student robotics organization at Universitas Teknokrat Indonesia, 
+              building future engineers through innovation and competition.
             </p>
             <div className="mt-6 flex justify-center">
                <motion.div 
@@ -58,7 +58,7 @@ export const Hero = () => {
       </Container>
       
       {/* Bottom Gradient for section transition */}
-      <div className="absolute bottom-0 left-0 w-full h-[30vh] bg-gradient-to-t from-[#0B1026] via-[#0B1026]/80 to-transparent z-20" />
+      <div className="absolute bottom-0 left-0 w-full h-[30vh] bg-gradient-to-t from-brand-navy via-brand-navy/80 to-transparent z-20" />
     </section>
   );
 };

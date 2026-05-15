@@ -7,7 +7,10 @@ import { motion } from "framer-motion";
 
 export const Achievement = () => {
   return (
-    <AnimatedSection id="achievement" className="py-24 bg-brand-navy">
+    <AnimatedSection id="achievement" className="py-24 bg-brand-navy relative overflow-hidden">
+      {/* Section Transitions */}
+      <div className="absolute top-0 left-0 w-full h-[20vh] bg-gradient-to-b from-brand-navy to-transparent z-0 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-[20vh] bg-gradient-to-t from-brand-navy to-transparent z-0 pointer-events-none" />
       <Container>
         <SectionTitle 
           title="National Excellence" 

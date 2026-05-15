@@ -7,6 +7,8 @@ import { DivisionPage } from "./pages/DivisionPage";
 import { SubDivisionPage } from "./pages/SubDivisionPage";
 import { AchievementsPage } from "./pages/AchievementsPage";
 import { OrganizationPage } from "./pages/OrganizationPage";
+import { RobotDetailPage } from "./pages/RobotDetailPage";
+import { ScrollToTop } from "./components/common/ScrollToTop";
 
 function App() {
   useEffect(() => {
@@ -23,6 +25,8 @@ function App() {
         infinite: false,
       });
 
+      window.lenis = lenis;
+
       function raf(time) {
         lenis.raf(time);
         requestAnimationFrame(raf);
@@ -38,6 +42,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="relative min-h-screen bg-brand-navy selection:bg-brand-primary selection:text-white">
         <Navbar />
         <main>
@@ -47,6 +52,7 @@ function App() {
             <Route path="/division/:id/:subId" element={<SubDivisionPage />} />
             <Route path="/achievements" element={<AchievementsPage />} />
             <Route path="/organization" element={<OrganizationPage />} />
+            <Route path="/robot/:id" element={<RobotDetailPage />} />
           </Routes>
         </main>
         <Footer />

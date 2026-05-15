@@ -12,9 +12,7 @@ export const DivisionPage = () => {
   const navigate = useNavigate();
   const division = ALL_DIVISIONS.find(d => d.id === id);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [division]);
+
 
   if (!division) return <div className="min-h-screen bg-brand-navy flex items-center justify-center text-white">Division not found</div>;
 
@@ -102,16 +100,7 @@ export const DivisionPage = () => {
               ))}
             </div>
 
-            {/* Division CTA */}
-            <div className="glass p-8 rounded-[20px] text-center border-brand-primary/10">
-               <h4 className="text-xl font-bold text-white mb-4">Want to Join?</h4>
-               <p className="text-sm text-brand-gray mb-8">
-                 We are always looking for passionate engineers and innovators to join our tactical units.
-               </p>
-               <Button className="w-full" variant={division.active ? "primary" : "outline"}>
-                 {division.active ? "Apply for Recruitment" : "Legacy Archive"}
-               </Button>
-            </div>
+
           </div>
         </div>
       </Container>

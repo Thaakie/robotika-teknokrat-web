@@ -4,10 +4,14 @@ import { SectionTitle } from "../../ui/SectionTitle";
 import { AnimatedSection } from "../../common/AnimatedSection";
 import { motion } from "framer-motion";
 import { Cpu, Settings, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Creativity = () => {
   return (
-    <AnimatedSection id="creativity" className="py-24 bg-brand-navy/50">
+    <AnimatedSection id="creativity" className="py-24 bg-brand-navy/50 relative overflow-hidden">
+      {/* Section Transitions */}
+      <div className="absolute top-0 left-0 w-full h-[20vh] bg-gradient-to-b from-brand-navy to-transparent z-0 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-[20vh] bg-gradient-to-t from-brand-navy to-transparent z-0 pointer-events-none" />
       <Container>
         <SectionTitle 
           title="Our Creativity" 
@@ -65,9 +69,9 @@ export const Creativity = () => {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-white/5">
-                   <button className="flex items-center gap-2 text-sm font-bold text-white group-hover:gap-4 transition-all">
+                   <Link to={robot.href} className="flex items-center gap-2 text-sm font-bold text-white group-hover:gap-4 transition-all">
                      Technical Details <Zap size={14} className="text-brand-yellow" />
-                   </button>
+                   </Link>
                 </div>
               </div>
             </motion.div>
