@@ -69,7 +69,7 @@ export const About = () => {
               </div>
               <h2 className="text-3xl font-black text-white uppercase tracking-tight">Kampus Pelopor</h2>
             </div>
-            <div className="glass p-8 rounded-[2.5rem] border-brand-yellow/10 relative overflow-hidden group">
+            <div className="glass p-8 rounded-[1.75rem] border-brand-yellow/10 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 text-brand-yellow/5 opacity-20 group-hover:opacity-40 transition-opacity">
                  <Rocket size={120} />
               </div>

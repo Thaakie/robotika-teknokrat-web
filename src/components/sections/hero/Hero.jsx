@@ -28,7 +28,7 @@ export const Hero = () => {
           >
             <h1 className="hero-title text-[14vw] lg:text-[10vw] font-[1000] italic leading-[0.75] tracking-tighter text-white uppercase flex flex-col items-center">
               <span className="block translate-x-[-5%]">Teknokrat</span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-white translate-x-[5%]">KRAKATAU</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-white translate-x-[5%] pr-4">KRAKATAU</span>
               <span className="block translate-x-[-2%]">TEAM</span>
             </h1>
           </motion.div>
