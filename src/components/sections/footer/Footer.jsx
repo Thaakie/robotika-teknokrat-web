@@ -11,10 +11,10 @@ export const Footer = () => {
             <div className="flex items-center gap-4 mb-6">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center overflow-hidden p-1 border border-white/5">
-                  <img src="/TeknokratLogo.png" alt="Teknokrat" className="w-full h-full object-contain" />
+                  <img src="/TeknokratLogo.png" alt="Teknokrat" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                 </div>
                 <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center overflow-hidden p-1 border border-white/5">
-                  <img src="/RoboticLogo.png" alt="Robotic" className="w-full h-full object-contain" />
+                  <img src="/RoboticLogo.png" alt="Robotic" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                 </div>
               </div>
               <h3 className="text-lg font-black text-white leading-tight uppercase">ROBOTIKA<br/><span className="text-brand-primary text-xs">TEKNOKRAT</span></h3>

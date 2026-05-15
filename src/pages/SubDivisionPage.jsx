@@ -85,6 +85,8 @@ export const SubDivisionPage = () => {
                <img 
                  src={`https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800`} 
                  alt="Robot Spec" 
+                 loading="lazy"
+                 decoding="async"
                  className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105" 
                />
                <div className="absolute inset-0 bg-gradient-to-t from-brand-navy to-transparent opacity-60" />

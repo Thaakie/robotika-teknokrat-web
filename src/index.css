@@ -69,6 +69,11 @@
   background: radial-gradient(circle at center, rgba(27, 31, 138, 0.15) 0%, transparent 70%);
 }
 
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @keyframes spotlight {
   0% {
     opacity: 0;
@@ -78,6 +83,10 @@
     opacity: 1;
     transform: translate(-50%, -40%) scale(1);
   }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
 }
 
 .animate-spotlight {

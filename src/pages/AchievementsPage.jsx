@@ -69,6 +69,8 @@ export const AchievementsPage = () => {
                               <img 
                                 src={item.image} 
                                 alt={item.title} 
+                                loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-105"
                               />
                             </div>

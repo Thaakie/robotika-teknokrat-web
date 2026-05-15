@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 UPDATE_LOG.txt
+SYSTEM_DESIGN.txt
 
 # Editor directories and files
 .vscode/*

@@ -70,7 +70,13 @@ export const RobotDetailPage = () => {
                animate={{ opacity: 1, scale: 1 }}
                className="rounded-[30px] overflow-hidden aspect-square border border-white/10 relative group shadow-2xl shadow-brand-primary/20"
              >
-               <img src={robot.image} alt={robot.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+               <img 
+                 src={robot.image} 
+                 alt={robot.name} 
+                 loading="lazy"
+                 decoding="async"
+                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+               />
                <div className="absolute inset-0 bg-gradient-to-t from-brand-navy to-transparent opacity-60" />
                <div className="absolute bottom-8 left-8 right-8 p-6 glass-card rounded-2xl border-white/10 backdrop-blur-xl">
                   <p className="text-brand-yellow font-black text-xs uppercase tracking-widest mb-1">Current Status</p>

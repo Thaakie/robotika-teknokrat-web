@@ -33,6 +33,8 @@ export const Creativity = () => {
                 <img 
                   src={robot.image} 
                   alt={robot.name} 
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-navy to-transparent opacity-60" />

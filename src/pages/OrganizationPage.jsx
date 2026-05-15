@@ -66,7 +66,13 @@ export const OrganizationPage = () => {
                 className="group glass-card p-8 rounded-[20px] text-center relative hover:border-brand-primary/40 transition-all"
               >
                 <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
-                  <img src={member.image} alt={member.name} className="w-full h-full object-cover bg-brand-navy" />
+                  <img 
+                    src={member.image} 
+                    alt={member.name} 
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover bg-brand-navy" 
+                  />
                 </div>
                 <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-2">{member.role}</p>
                 <p className="text-xl font-bold text-white mb-1">{member.name}</p>

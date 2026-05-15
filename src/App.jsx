@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/ui/Navbar";
 import { Footer } from "./components/sections/footer/Footer";
@@ -9,10 +9,23 @@ import { AchievementsPage } from "./pages/AchievementsPage";
 import { OrganizationPage } from "./pages/OrganizationPage";
 import { RobotDetailPage } from "./pages/RobotDetailPage";
 import { ScrollToTop } from "./components/common/ScrollToTop";
+import { Preloader } from "./components/common/Preloader";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (window.Lenis) {
+    // Simulate loading or wait for window.onload
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!loading && window.Lenis) {
       const lenis = new window.Lenis({
         duration: 2.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -38,11 +51,15 @@ function App() {
         lenis.destroy();
       };
     }
-  }, []);
+  }, [loading]);
 
   return (
     <Router>
       <ScrollToTop />
+      <AnimatePresence mode="wait">
+        {loading && <Preloader key="preloader" />}
+      </AnimatePresence>
+      
       <div className="relative min-h-screen bg-brand-navy selection:bg-brand-primary selection:text-white">
         <Navbar />
         <main>

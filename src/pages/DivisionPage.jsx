@@ -95,7 +95,13 @@ export const DivisionPage = () => {
                     idx === 0 ? "col-span-2 aspect-[16/10]" : ""
                   )}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+                  <img 
+                    src={img} 
+                    alt="" 
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" 
+                  />
                 </motion.div>
               ))}
             </div>

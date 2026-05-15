@@ -40,6 +40,8 @@ export const Gallery = () => {
               <img 
                 src={img.url} 
                 alt="Gallery" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-brand-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
