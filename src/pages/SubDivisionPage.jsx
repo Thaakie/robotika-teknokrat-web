@@ -34,9 +34,16 @@ export const SubDivisionPage = () => {
   const baseDivision = ALL_DIVISIONS.find(d => d.id === id);
   const baseSubDivision = baseDivision?.subdivisions.find(s => s.id === subId);
   
-  // Merge data
+  // Merge data dengan aman
   const division = baseDivision;
-  const subDivision = baseSubDivision ? { ...baseSubDivision, ...cmsSubDivision } : null;
+  let subDivision = baseSubDivision ? { ...baseSubDivision } : null;
+  
+  if (subDivision && cmsSubDivision) {
+    if (cmsSubDivision.name) subDivision.name = cmsSubDivision.name;
+    if (cmsSubDivision.desc) subDivision.desc = cmsSubDivision.desc;
+    if (cmsSubDivision.detail) subDivision.detail = cmsSubDivision.detail;
+    if (cmsSubDivision.image) subDivision.image = cmsSubDivision.image;
+  }
 
 
 
