@@ -82,15 +82,39 @@ export const OrganizationPage = () => {
     fetchDepartments();
   }, []);
 
-  // Menggabungkan data CMS dengan Dummy (agar tidak kosong jika CMS baru diisi sebagian)
-  const displayLeaders = [...ORG_STRUCTURE.core];
-  coreLeaders.forEach((cmsMember) => {
-    const matchIndex = displayLeaders.findIndex((dummy) => 
-      dummy.role.toLowerCase() === (cmsMember.role || "").toLowerCase()
-    );
-    if (matchIndex >= 0) displayLeaders[matchIndex] = { ...displayLeaders[matchIndex], ...cmsMember };
-    else displayLeaders.push(cmsMember);
+  // Smart Merge: Hapus dummy jika CMS sudah punya peran yang mirip (mengandung kata kunci yang sama)
+  let displayLeaders = [...ORG_STRUCTURE.core];
+  const cmsRoles = coreLeaders.map(c => (c.role || "").toLowerCase());
+  
+  if (cmsRoles.some(r => r.includes('ketua') && !r.includes('wakil'))) {
+    displayLeaders = displayLeaders.filter(d => d.role.toLowerCase() !== 'ketua');
+  }
+  if (cmsRoles.some(r => r.includes('wakil'))) {
+    displayLeaders = displayLeaders.filter(d => d.role.toLowerCase() !== 'wakil ketua');
+  }
+  if (cmsRoles.some(r => r.includes('sekretaris'))) {
+    displayLeaders = displayLeaders.filter(d => d.role.toLowerCase() !== 'sekretaris');
+  }
+  if (cmsRoles.some(r => r.includes('bendahara'))) {
+    displayLeaders = displayLeaders.filter(d => d.role.toLowerCase() !== 'bendahara');
+  }
+
+  // Gabungkan dan urutkan
+  displayLeaders = [...displayLeaders, ...coreLeaders].sort((a, b) => {
+    const getOrder = (item) => {
+      if (item.order !== undefined && item.order !== null) return item.order;
+      const r = (item.role || "").toLowerCase();
+      if (r === 'ketua') return 1;
+      if (r.includes('wakil')) return 2;
+      if (r.includes('sekretaris')) return 3;
+      if (r.includes('bendahara')) return 4;
+      return 99;
+    };
+    return getOrder(a) - getOrder(b);
   });
+
+  const topLeaders = displayLeaders.filter(member => (member.role || "").toLowerCase().includes('ketua'));
+  const otherLeaders = displayLeaders.filter(member => !(member.role || "").toLowerCase().includes('ketua'));
 
   const displayDivisions = [...ORG_STRUCTURE.divisions];
   divisions.forEach((cmsDiv) => {
@@ -146,14 +170,41 @@ export const OrganizationPage = () => {
              </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {displayLeaders.map((member, idx) => (
+          {/* Baris Pertama: Ketua & Wakil */}
+          <div className="flex flex-wrap justify-center gap-8 mb-12">
+            {topLeaders.map((member, idx) => (
               <motion.div
                 key={member.role || idx}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className="group glass-card p-8 rounded-[20px] text-center relative hover:border-brand-primary/40 transition-all"
+                className="group glass-card p-8 rounded-[20px] text-center relative hover:border-brand-primary/40 transition-all w-full md:w-[calc(50%-1rem)] lg:w-[calc(33%-1rem)] max-w-sm"
+              >
+                <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
+                  <img 
+                    src={member.image?.asset ? urlFor(member.image).width(300).height(300).url() : (member.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=fallback")} 
+                    alt={member.name} 
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover bg-brand-navy" 
+                  />
+                </div>
+                <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-2">{member.role}</p>
+                <p className="text-xl font-bold text-white mb-1">{member.name}</p>
+                <div className="w-8 h-1 bg-brand-yellow mx-auto mt-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Baris Kedua: Sekretaris & Bendahara */}
+          <div className="flex flex-wrap justify-center gap-8">
+            {otherLeaders.map((member, idx) => (
+              <motion.div
+                key={member.role || idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (idx + topLeaders.length) * 0.1 }}
+                className="group glass-card p-8 rounded-[20px] text-center relative hover:border-brand-primary/40 transition-all w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] max-w-sm"
               >
                 <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
                   <img 
