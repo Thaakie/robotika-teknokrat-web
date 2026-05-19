@@ -3,12 +3,41 @@ import { Container } from "../components/ui/Container";
 import { motion } from "framer-motion";
 import { Award, Calendar, ChevronRight, Trophy, Star, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { sanityClient, urlFor } from "../lib/sanity";
 
 export const AchievementsPage = () => {
+  const [achievements, setAchievements] = useState([]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const fetchAchievements = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "achievement"] | order(year desc) {
+            year,
+            categories[]{
+              id,
+              name,
+              items[]{
+                title,
+                description,
+                image
+              }
+            }
+          }`
+        );
+        setAchievements(data);
+      } catch (error) {
+        console.error("Gagal mengambil data achievement dari Sanity:", error);
+      }
+    };
+
+    fetchAchievements();
   }, []);
+
+  const displayAchievements = achievements.length > 0 ? achievements : ACHIEVEMENTS;
 
   return (
     <div className="min-h-screen bg-brand-navy pt-32 pb-20">
@@ -34,7 +63,7 @@ export const AchievementsPage = () => {
 
         {/* Timeline of Achievements */}
         <div className="space-y-24">
-          {ACHIEVEMENTS.map((yearData, yearIdx) => (
+          {displayAchievements.map((yearData, yearIdx) => (
             <div key={yearData.year} className="relative">
               {/* Year Marker */}
               <div className="flex items-center gap-6 mb-12">
@@ -46,7 +75,7 @@ export const AchievementsPage = () => {
 
               {/* Categories Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {yearData.categories.map((cat, catIdx) => (
+                {yearData.categories?.map((cat, catIdx) => (
                   <motion.div
                     key={cat.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -62,12 +91,12 @@ export const AchievementsPage = () => {
                     <h4 className="text-xl font-bold text-white mb-6 leading-tight min-h-[3.5rem] flex items-center">{cat.name}</h4>
                     
                     <div className="space-y-6">
-                      {cat.items.map((item, itemIdx) => (
+                      {cat.items?.map((item, itemIdx) => (
                         <div key={itemIdx} className="p-5 rounded-[20px] bg-white/5 border border-white/5 group-hover:bg-white/10 transition-all flex flex-col h-full">
                           {item.image && (
                             <div className="mb-4 rounded-[15px] overflow-hidden aspect-[16/9] border border-white/10 flex-shrink-0">
                               <img 
-                                src={item.image} 
+                                src={item.image?.asset ? urlFor(item.image).width(800).height(450).url() : item.image} 
                                 alt={item.title} 
                                 loading="lazy"
                                 decoding="async"

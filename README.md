@@ -26,5 +26,35 @@ This website is designed to be a "Single Source of Truth" for the organization. 
 ## 🎓 About the Organization
 **Robotika Teknokrat** is a premier robotics team in Lampung, Indonesia, dedicated to research, development, and competition excellence. We compete in prestigious national events such as KRI, KRTI, and KKI, consistently pushing the boundaries of autonomous systems and engineering synergy.
 
+## 📝 Sanity CMS & Data Management
+The content of this portal is fully dynamic and managed via Sanity CMS (`/cms-studio`). 
+When editing **"Divisi Lomba (Land, Air, dll)"** in the CMS, you **MUST** use the exact `ID` listed below so the data connects correctly to the respective website pages.
+
+**A. LAND DIVISION**
+- ID Divisi: `land`
+- ID Sub-Divisi:
+  - COE Robotic ➔ `coe`
+  - KRI ➔ `kri-land`
+
+**B. AIR DIVISION**
+- ID Divisi: `air`
+- ID Sub-Divisi:
+  - VTOL ➔ `vtol`
+  - Fixed Wing ➔ `fixed-wing`
+  - Racing Plane ➔ `racing-plane`
+  - Technology Development ➔ `tech-dev`
+
+**C. WATER DIVISION**
+- ID Divisi: `water`
+- ID Sub-Divisi:
+  - ERC ➔ `erc`
+  - ASV ➔ `asv`
+  - FERC ➔ `ferc`
+
+**D. LEGACY DIVISIONS**
+- Darat Humanoid (KRSBI) ➔ ID: `krsbi` (Sub: `krsbi-sub`)
+- Air Division (KRAI) ➔ ID: `krai` (Sub: `krai-sub`)
+- Land Division (KRTMI) ➔ ID: `krtmi` (Sub: `krtmi-sub`)
+
 ---
-*Developed with ❤️ for the future of Indonesian Robotics.*
+*Developed with ❤️ for the future of Teknokrat Robotics.*

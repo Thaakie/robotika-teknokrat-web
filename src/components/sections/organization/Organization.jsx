@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { ORG_STRUCTURE } from "../../../data/organization";
+import { sanityClient, urlFor } from "../../../lib/sanity";
 import { Container } from "../../ui/Container";
 import { SectionTitle } from "../../ui/SectionTitle";
 import { AnimatedSection } from "../../common/AnimatedSection";
@@ -15,6 +17,97 @@ const iconMap = {
 };
 
 export const Organization = () => {
+  const [coreLeaders, setCoreLeaders] = useState([]);
+  const [divisions, setDivisions] = useState([]);
+  const [departments, setDepartments] = useState([]);
+
+  useEffect(() => {
+    // Ambil data Pengurus Inti dari Sanity
+    const fetchCoreLeaders = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "coreLeader"] | order(order asc) {
+            role,
+            name,
+            image
+          }`
+        );
+        setCoreLeaders(data);
+      } catch (error) {
+        console.error("Gagal mengambil data core leader dari Sanity:", error);
+      }
+    };
+
+    // Ambil data Divisi Utama dari Sanity
+    const fetchDivisions = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "division"] | order(_createdAt asc) {
+            "id": idName,
+            name,
+            head,
+            icon,
+            description,
+            members
+          }`
+        );
+        setDivisions(data);
+      } catch (error) {
+        console.error("Gagal mengambil data divisi dari Sanity:", error);
+      }
+    };
+
+    // Ambil data Departemen dari Sanity
+    const fetchDepartments = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "department"] | order(_createdAt asc) {
+            "id": idName,
+            name,
+            head,
+            subs[]{name, desc}
+          }`
+        );
+        setDepartments(data);
+      } catch (error) {
+        console.error("Gagal mengambil data departemen dari Sanity:", error);
+      }
+    };
+
+    fetchCoreLeaders();
+    fetchDivisions();
+    fetchDepartments();
+  }, []);
+
+  // Menggabungkan data CMS dengan Dummy (agar tidak kosong jika CMS baru diisi sebagian)
+  const displayLeaders = [...ORG_STRUCTURE.core];
+  coreLeaders.forEach((cmsMember) => {
+    const matchIndex = displayLeaders.findIndex((dummy) => 
+      dummy.role.toLowerCase() === (cmsMember.role || "").toLowerCase()
+    );
+    if (matchIndex >= 0) displayLeaders[matchIndex] = { ...displayLeaders[matchIndex], ...cmsMember };
+    else displayLeaders.push(cmsMember);
+  });
+
+  const displayDivisions = [...ORG_STRUCTURE.divisions];
+  divisions.forEach((cmsDiv) => {
+    const matchIndex = displayDivisions.findIndex((dummy) => 
+      dummy.id === cmsDiv.id || dummy.name.toLowerCase() === (cmsDiv.name || "").toLowerCase()
+    );
+    if (matchIndex >= 0) displayDivisions[matchIndex] = { ...displayDivisions[matchIndex], ...cmsDiv };
+    else displayDivisions.push(cmsDiv);
+  });
+
+  const displayDepartments = [...ORG_STRUCTURE.departments];
+  departments.forEach((cmsDept) => {
+    const matchIndex = displayDepartments.findIndex((dummy) => 
+      dummy.id.toLowerCase() === (cmsDept.id || "").toLowerCase() ||
+      dummy.name.toLowerCase() === (cmsDept.name || "").toLowerCase()
+    );
+    if (matchIndex >= 0) displayDepartments[matchIndex] = { ...displayDepartments[matchIndex], ...cmsDept };
+    else displayDepartments.push(cmsDept);
+  });
+
   return (
     <AnimatedSection id="organization" className="py-24 relative overflow-hidden">
       {/* Decorative lines */}
@@ -33,14 +126,22 @@ export const Organization = () => {
         {/* Core Leadership */}
         <div className="max-w-4xl mx-auto mb-20">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {ORG_STRUCTURE.core.map((member, idx) => (
+            {displayLeaders.map((member, idx) => (
               <motion.div
-                key={member.role}
+                key={member.role || idx}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-brand-primary/10 border border-brand-primary/20 p-6 rounded-2xl text-center hover:bg-brand-primary/20 transition-all"
+                className="bg-brand-primary/10 border border-brand-primary/20 p-6 rounded-2xl text-center hover:bg-brand-primary/20 transition-all flex flex-col items-center"
               >
+                {/* Tambahan: Menampilkan Foto Pengurus */}
+                <div className="w-24 h-24 mb-4 rounded-full overflow-hidden bg-brand-primary/20 border-2 border-brand-primary/50">
+                  <img 
+                    src={member.image?.asset ? urlFor(member.image).width(200).height(200).url() : (member.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=fallback")} 
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <p className="text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mb-1">{member.role}</p>
                 <p className="text-white font-bold">{member.name}</p>
               </motion.div>
@@ -59,8 +160,8 @@ export const Organization = () => {
               Main Divisions
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {ORG_STRUCTURE.divisions.map((div, idx) => {
-                const Icon = iconMap[div.icon];
+              {displayDivisions.map((div, idx) => {
+                const Icon = iconMap[div.icon] || Users;
                 return (
                   <motion.div
                     key={div.name}
@@ -88,9 +189,9 @@ export const Organization = () => {
               Department Hierarchy
             </h4>
             <div className="space-y-4">
-               {ORG_STRUCTURE.departments.map((dept, idx) => (
+               {displayDepartments.map((dept, idx) => (
                  <motion.div
-                  key={dept.name}
+                  key={dept.id || dept.name || idx}
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}

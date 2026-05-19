@@ -1,5 +1,6 @@
 import { Container } from "../components/ui/Container";
 import { ORG_STRUCTURE } from "../data/organization";
+import { sanityClient, urlFor } from "../lib/sanity";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Globe, BookOpen, Camera, ChevronRight, ArrowLeft, Shield, Award, User } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,10 +17,99 @@ const iconMap = {
 
 export const OrganizationPage = () => {
   const [expandedDiv, setExpandedDiv] = useState(null);
+  const [coreLeaders, setCoreLeaders] = useState([]);
+  const [divisions, setDivisions] = useState([]);
+  const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    // Ambil data Pengurus Inti dari Sanity
+    const fetchCoreLeaders = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "coreLeader"] | order(order asc) {
+            role,
+            name,
+            image
+          }`
+        );
+        setCoreLeaders(data);
+      } catch (error) {
+        console.error("Gagal mengambil data core leader dari Sanity:", error);
+      }
+    };
+
+    // Ambil data Divisi Utama dari Sanity
+    const fetchDivisions = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "division"] | order(_createdAt asc) {
+            "id": idName,
+            name,
+            head,
+            headImage,
+            icon,
+            description,
+            members[]{name, image}
+          }`
+        );
+        setDivisions(data);
+      } catch (error) {
+        console.error("Gagal mengambil data divisi dari Sanity:", error);
+      }
+    };
+
+    // Ambil data Departemen dari Sanity
+    const fetchDepartments = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "department"] | order(_createdAt asc) {
+            "id": idName,
+            name,
+            head,
+            headImage
+          }`
+        );
+        setDepartments(data);
+      } catch (error) {
+        console.error("Gagal mengambil data departemen dari Sanity:", error);
+      }
+    };
+
+    fetchCoreLeaders();
+    fetchDivisions();
+    fetchDepartments();
   }, []);
+
+  // Menggabungkan data CMS dengan Dummy (agar tidak kosong jika CMS baru diisi sebagian)
+  const displayLeaders = [...ORG_STRUCTURE.core];
+  coreLeaders.forEach((cmsMember) => {
+    const matchIndex = displayLeaders.findIndex((dummy) => 
+      dummy.role.toLowerCase() === (cmsMember.role || "").toLowerCase()
+    );
+    if (matchIndex >= 0) displayLeaders[matchIndex] = { ...displayLeaders[matchIndex], ...cmsMember };
+    else displayLeaders.push(cmsMember);
+  });
+
+  const displayDivisions = [...ORG_STRUCTURE.divisions];
+  divisions.forEach((cmsDiv) => {
+    const matchIndex = displayDivisions.findIndex((dummy) => 
+      dummy.id === cmsDiv.id || dummy.name.toLowerCase() === (cmsDiv.name || "").toLowerCase()
+    );
+    if (matchIndex >= 0) displayDivisions[matchIndex] = { ...displayDivisions[matchIndex], ...cmsDiv };
+    else displayDivisions.push(cmsDiv);
+  });
+
+  const displayDepartments = [...ORG_STRUCTURE.departments];
+  departments.forEach((cmsDept) => {
+    const matchIndex = displayDepartments.findIndex((dummy) => 
+      dummy.id.toLowerCase() === (cmsDept.id || "").toLowerCase() ||
+      dummy.name.toLowerCase() === (cmsDept.name || "").toLowerCase()
+    );
+    if (matchIndex >= 0) displayDepartments[matchIndex] = { ...displayDepartments[matchIndex], ...cmsDept };
+    else displayDepartments.push(cmsDept);
+  });
 
   return (
     <div className="min-h-screen bg-brand-navy pt-32 pb-20 overflow-hidden">
@@ -57,9 +147,9 @@ export const OrganizationPage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {ORG_STRUCTURE.core.map((member, idx) => (
+            {displayLeaders.map((member, idx) => (
               <motion.div
-                key={member.id}
+                key={member.role || idx}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
@@ -67,7 +157,7 @@ export const OrganizationPage = () => {
               >
                 <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
                   <img 
-                    src={member.image} 
+                    src={member.image?.asset ? urlFor(member.image).width(300).height(300).url() : (member.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=fallback")} 
                     alt={member.name} 
                     loading="lazy"
                     decoding="async"
@@ -90,8 +180,8 @@ export const OrganizationPage = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-6">
-            {ORG_STRUCTURE.divisions.map((div, idx) => {
-              const Icon = iconMap[div.icon];
+            {displayDivisions.map((div, idx) => {
+              const Icon = iconMap[div.icon] || Users; // Default to Users icon if not found
               const isExpanded = expandedDiv === div.id;
               
               return (
@@ -111,10 +201,19 @@ export const OrganizationPage = () => {
                     onClick={() => setExpandedDiv(isExpanded ? null : div.id)}
                   >
                     <div className={cn(
-                      "w-20 h-20 rounded-[15px] flex items-center justify-center transition-all duration-500",
-                      isExpanded ? "bg-brand-primary text-white scale-110" : "bg-brand-primary/10 text-brand-primary"
+                      "w-20 h-20 rounded-[15px] flex items-center justify-center transition-all duration-500 overflow-hidden flex-shrink-0",
+                      isExpanded ? "bg-brand-primary text-white scale-110" : "bg-brand-primary/10 text-brand-primary",
+                      div.headImage?.asset && "p-0"
                     )}>
-                      <Icon size={32} />
+                      {div.headImage?.asset ? (
+                        <img 
+                          src={urlFor(div.headImage).width(200).height(200).url()} 
+                          alt={div.head} 
+                          className="w-full h-full object-cover" 
+                        />
+                      ) : (
+                        <Icon size={32} />
+                      )}
                     </div>
                     <div className="flex-1 text-center md:text-left">
                       <p className="text-2xl font-black text-white uppercase tracking-tight mb-1">{div.name}</p>
@@ -145,14 +244,23 @@ export const OrganizationPage = () => {
                             <div>
                                <p className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em] mb-6">Key Members</p>
                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                  {div.members.map((member, mIdx) => (
-                                    <div key={mIdx} className="flex items-center gap-3 p-3 rounded-[15px] bg-white/5 border border-white/5">
-                                       <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center text-brand-primary">
-                                          <User size={14} />
-                                       </div>
-                                       <span className="text-sm font-bold text-white/80">{member}</span>
-                                    </div>
-                                  ))}
+                                  {div.members?.map((member, mIdx) => {
+                                    const memberName = typeof member === 'string' ? member : member.name;
+                                    const memberImg = typeof member === 'object' && member.image ? member.image : null;
+                                    
+                                    return (
+                                      <div key={mIdx} className="flex items-center gap-3 p-3 rounded-[15px] bg-white/5 border border-white/5">
+                                         <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center text-brand-primary overflow-hidden flex-shrink-0">
+                                            {memberImg?.asset ? (
+                                              <img src={urlFor(memberImg).width(100).height(100).url()} alt={memberName} className="w-full h-full object-cover" />
+                                            ) : (
+                                              <User size={14} />
+                                            )}
+                                         </div>
+                                         <span className="text-sm font-bold text-white/80">{memberName}</span>
+                                      </div>
+                                    );
+                                  })}
                                </div>
                             </div>
                           </div>
@@ -174,9 +282,9 @@ export const OrganizationPage = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {ORG_STRUCTURE.departments.map((dept, idx) => (
+            {displayDepartments.map((dept, idx) => (
               <motion.div
-                key={dept.id}
+                key={dept.id || idx}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -190,14 +298,21 @@ export const OrganizationPage = () => {
                   <h3 className="text-2xl font-black text-white tracking-tight">{dept.id.toUpperCase()}</h3>
                 </div>
                 
-                <div className="mb-8 p-4 rounded-[15px] bg-white/5 border border-white/5">
-                   <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-1">Department Head</p>
-                   <p className="text-white font-bold">{dept.head}</p>
+                <div className="mb-8 p-4 rounded-[15px] bg-white/5 border border-white/5 flex items-center gap-4">
+                   {dept.headImage?.asset && (
+                     <div className="w-12 h-12 rounded-full overflow-hidden border border-brand-primary flex-shrink-0">
+                       <img src={urlFor(dept.headImage).width(100).height(100).url()} alt={dept.head} className="w-full h-full object-cover" />
+                     </div>
+                   )}
+                   <div>
+                     <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-1">Department Head</p>
+                     <p className="text-white font-bold">{dept.head}</p>
+                   </div>
                 </div>
 
                 <div className="space-y-4 flex-1">
                    <p className="text-[10px] font-black text-brand-gray uppercase tracking-[0.2em] mb-4">Sub-Hierarchy</p>
-                   {dept.subs.map((sub, i) => (
+                   {dept.subs?.map((sub, i) => (
                      <div key={i} className="flex items-start gap-4 p-4 rounded-[15px] hover:bg-white/5 transition-all">
                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-primary flex-shrink-0" />
                        <div>

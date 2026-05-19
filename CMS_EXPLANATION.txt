@@ -1,0 +1,153 @@
+========================================================================
+PENJELASAN INTEGRASI CMS SANITY.IO UNTUK ROBOTIKA TEKNOKRAT
+========================================================================
+
+Dokumen ini menjelaskan langkah-langkah yang telah kita lakukan untuk
+mengubah website dari sistem data statis (hardcoded) menjadi dinamis 
+menggunakan Headless CMS (Sanity.io).
+
+------------------------------------------------------------------------
+1. PEMBUATAN SANITY STUDIO (FOLDER: /cms-studio)
+------------------------------------------------------------------------
+Fungsi: Bertindak sebagai "Aplikasi Kasir" atau Dashboard Admin.
+- Ini adalah aplikasi React terpisah dari website utama Anda.
+- Kita mengaturnya agar siapa pun yang memiliki akses dapat masuk, 
+  menambah, mengedit, atau menghapus data pengurus, foto, dll.
+- Di dalam folder ini ada `schemaTypes/` (seperti coreLeader.js). File
+  ini berfungsi sebagai "Cetakan Formulir". Kita memberi tahu Sanity:
+  "Tolong buatkan kolom Jabatan, Nama, dan Upload Foto".
+- Data yang di-publish dari sini TIDAK tersimpan di folder ini, 
+  melainkan langsung dikirim ke Cloud Server Sanity (Database Asli).
+
+------------------------------------------------------------------------
+2. DATABASE CLOUD SANITY (SANITY CONTENT LAKE)
+------------------------------------------------------------------------
+Fungsi: Sebagai "Gudang/Server Database" asli.
+- Disimpan di server luar negeri milik Sanity.io.
+- Menangani seluruh penyimpanan teks dan gambar secara aman dan otomatis.
+- Anda tidak perlu membayar hosting untuk database ini (ada kuota gratis).
+
+------------------------------------------------------------------------
+3. KONEKTOR API (FILE: src/lib/sanity.js)
+------------------------------------------------------------------------
+Fungsi: Sebagai "Jembatan Penghubung".
+- Website React Anda tidak bisa tiba-tiba membaca data Sanity tanpa
+  izin dan alamat yang jelas.
+- File ini menggunakan library resmi `@sanity/client`. 
+- File ini menyimpan "Project ID" (ckdlgm31) yang berfungsi layaknya 
+  alamat rumah untuk memberi tahu website: "Ambil datanya dari gudang
+  yang memiliki ID ckdlgm31".
+
+------------------------------------------------------------------------
+4. MODIFIKASI FRONTEND (FILE: OrganizationPage, Achievement, Creativity, Gallery)
+------------------------------------------------------------------------
+Fungsi: "Ruang Makan" atau Tampilan Pengunjung.
+- Sebelumnya: Website membaca data statis langsung dari file lokal
+  (contoh: src/data/organization.js). Jika data berubah, code harus diubah.
+- Sekarang: Kita menggunakan fitur `useState` dan `useEffect` dari React.
+  Saat pengunjung membuka website, React akan melakukan `fetch` (meminta)
+  data dari API Sanity.
+  
+SISTEM "MERGE" & FALLBACK (Sangat Penting):
+- Website Anda sekarang sangat cerdas. Ia menggunakan sistem gabungan (Hybrid).
+- Jika Anda MENGISI data di Sanity, maka data dari Sanity akan MENIMPA
+  data dummy/statis yang ada di dalam file kodingan.
+- Jika Anda MENGOSONGKAN data di Sanity (atau belum mengisinya), maka
+  website akan secara otomatis memunculkan data dummy lama sebagai
+  cadangan (fallback). Hal ini memastikan tampilan website Anda tidak
+  pernah rusak atau kosong/blank!
+
+------------------------------------------------------------------------
+5. FITUR APA SAJA YANG SUDAH TERHUBUNG KE CMS?
+------------------------------------------------------------------------
+Berikut adalah daftar 6 modul utama yang sudah 100% dinamis:
+
+1. Core Executive Board (Pengurus Inti) -> Nama, Jabatan, Foto, Social Media.
+2. Seksi Bidang (Divisi) -> Nama Divisi, Foto Kepala, Anggota, Foto Anggota.
+3. Kepala Departemen Lomba -> Nama Kepala, Foto Kepala (Struktur lomba dibuat fixed).
+4. Achievement (Prestasi) -> Tahun, Kategori, Foto Prestasi.
+5. Our Creativity (Karya Robot) -> Judul, Divisi, Deskripsi, Tech Stack, Foto.
+6. Gallery (Captured Moments) -> Foto Galeri dan Ukuran Tampilan.
+
+Catatan Media: Semua foto diproses otomatis oleh Sanity menggunakan 
+library pembantu `urlFor()`. Gambar akan di-resize, di-compress (webp), 
+dan dikirim via CDN super cepat.
+
+------------------------------------------------------------------------
+6. ALUR KERJA (WORKFLOW) YANG BENAR
+------------------------------------------------------------------------
+Bagaimana cara kerja Anda ke depannya?
+
+A. TAHAP DEVELOPMENT (DI LAPTOP ANDA)
+   - Buka 2 terminal: 
+     1) `npm run dev` di root (menjalankan web utama di localhost:5173)
+     2) `npm run dev` di folder cms-studio (menjalankan admin di localhost:3333)
+   - Edit data di localhost:3333, lalu lihat perubahannya di localhost:5173.
+
+B. TAHAP DEPLOYMENT (ONLINE UNTUK PUBLIK)
+   - Jika sudah dites di laptop dan aman, lakukan `git add`, `git commit`, 
+     lalu `git push` ke GitHub.
+   - Vercel akan otomatis menarik kode terbaru dari GitHub dan merilisnya.
+   - Nanti, pengunjung website online Anda (di Vercel) akan otomatis 
+     melihat data yang sama dengan yang ada di Sanity.
+
+CATATAN PENTING SEHARI-HARI:
+Jika suatu saat Anda hanya ingin mengubah konten (Nama, Foto, Teks), 
+Anda TIDAK PERLU membuka VS Code lagi. Cukup buka halaman Admin Sanity
+di browser Anda, ubah kontennya, klik "Publish", dan website Vercel 
+akan langsung berubah secara otomatis dalam hitungan detik!
+
+------------------------------------------------------------------------
+7. BAGAIMANA CARA PENGURUS LAIN AKSES CMS?
+------------------------------------------------------------------------
+Pertanyaan Umum: "Bagaimana cara agar pengurus lain bisa membuka Dashboard
+Admin (Kasir) tanpa perlu menjalankan localhost di laptop saya?"
+
+Jawabannya: DEPLOY SANITY STUDIO.
+- Sanity memberikan hosting gratis khusus untuk halaman Dashboard Admin ini.
+- Caranya:
+  1. Buka terminal di VS Code.
+  2. Masuk ke folder cms-studio (`cd cms-studio`).
+  3. Matikan server lokal jika sedang jalan (`Ctrl + C`).
+  4. Ketik perintah: `npx sanity deploy`
+  5. Masukkan nama link yang Anda inginkan (contoh: robotika-teknokrat).
+- Hasilnya: Dashboard Admin Anda akan online selamanya (misal di 
+  https://robotika-teknokrat.sanity.studio) dan bisa diakses lewat HP atau 
+  laptop oleh siapa pun yang punya akun/diundang!
+
+------------------------------------------------------------------------
+8. PANDUAN PENGISIAN "ID" DIVISI LOMBA & SUB-DIVISI
+------------------------------------------------------------------------
+Jika Anda ingin mengubah konten di halaman "Divisi Lomba (Land, Air, dll)" 
+pada CMS, Anda WAJIB menggunakan "ID" yang sama persis (huruf kecil semua)
+agar data CMS bisa terhubung dengan website. 
+
+Berikan daftar ini kepada Ketua Robotik atau admin yang bertugas:
+
+A. LAND DIVISION
+   - ID Divisi: land
+   - ID Sub-Divisi:
+     • COE Robotic -> coe
+     • KRI -> kri-land
+
+B. AIR DIVISION
+   - ID Divisi: air
+   - ID Sub-Divisi:
+     • VTOL -> vtol
+     • Fixed Wing -> fixed-wing
+     • Racing Plane -> racing-plane
+     • Technology Development -> tech-dev
+
+C. WATER DIVISION
+   - ID Divisi: water
+   - ID Sub-Divisi:
+     • ERC -> erc
+     • ASV -> asv
+     • FERC -> ferc
+
+D. DIVISI LEGACY (TIDAK AKTIF)
+   - Darat Humanoid (KRSBI) -> ID: krsbi (Sub-divisi: krsbi-sub)
+   - Air Division (KRAI) -> ID: krai (Sub-divisi: krai-sub)
+   - Land Division (KRTMI) -> ID: krtmi (Sub-divisi: krtmi-sub)
+========================================================================
+
