@@ -43,10 +43,41 @@ export const Footer = () => {
             </ul>
           </div>
 
+          {/* Instagram */}
+          <div>
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Our Instagram</h4>
+            <ul className="space-y-4">
+              <li>
+                <a href="https://instagram.com/krakatau_xnav" target="_blank" rel="noreferrer" className="group flex flex-col sm:flex-row sm:items-center justify-between text-sm gap-1">
+                  <span className="text-white font-bold group-hover:text-brand-primary transition-colors">Fixed Wings</span>
+                  <span className="text-brand-gray text-[10px] sm:text-xs">@krakatau_xnav</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://instagram.com/krakataurbteam_uti" target="_blank" rel="noreferrer" className="group flex flex-col sm:flex-row sm:items-center justify-between text-sm gap-1">
+                  <span className="text-white font-bold group-hover:text-brand-primary transition-colors">Kapal</span>
+                  <span className="text-brand-gray text-[10px] sm:text-xs">@krakataurbteam_uti</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://instagram.com/krakatau_biantara" target="_blank" rel="noreferrer" className="group flex flex-col sm:flex-row sm:items-center justify-between text-sm gap-1">
+                  <span className="text-white font-bold group-hover:text-brand-primary transition-colors">VTOL</span>
+                  <span className="text-brand-gray text-[10px] sm:text-xs">@krakatau_biantara</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://instagram.com/krakatau_teknokrat" target="_blank" rel="noreferrer" className="group flex flex-col sm:flex-row sm:items-center justify-between text-sm gap-1">
+                  <span className="text-white font-bold group-hover:text-brand-primary transition-colors">Racing Plane</span>
+                  <span className="text-brand-gray text-[10px] sm:text-xs">@krakatau_teknokrat</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
           {/* Contact */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-1">
             <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Contact Us</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-6">
               <div className="flex gap-4">
                  <div className="mt-1 text-brand-primary"><MapPin size={18} /></div>
                  <div>
