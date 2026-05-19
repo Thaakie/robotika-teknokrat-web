@@ -2,6 +2,8 @@ import { Container } from "../../ui/Container";
 import { SectionTitle } from "../../ui/SectionTitle";
 import { AnimatedSection } from "../../common/AnimatedSection";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { sanityClient, urlFor } from "../../../lib/sanity";
 
 const GALLERY_IMAGES = [
   { url: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800", size: "large" },
@@ -13,6 +15,29 @@ const GALLERY_IMAGES = [
 ];
 
 export const Gallery = () => {
+  const [galleryImages, setGalleryImages] = useState([]);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "gallery"] | order(_createdAt desc) {
+            title,
+            image,
+            size
+          }`
+        );
+        setGalleryImages(data);
+      } catch (error) {
+        console.error("Gagal mengambil data gallery dari Sanity:", error);
+      }
+    };
+
+    fetchGallery();
+  }, []);
+
+  const displayImages = galleryImages.length > 0 ? galleryImages : GALLERY_IMAGES;
+
   return (
     <AnimatedSection id="gallery" className="py-24 bg-brand-navy">
       <Container>
@@ -23,7 +48,7 @@ export const Gallery = () => {
         />
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
-          {GALLERY_IMAGES.map((img, idx) => (
+          {displayImages.map((img, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -38,8 +63,8 @@ export const Gallery = () => {
               )}
             >
               <img 
-                src={img.url} 
-                alt="Gallery" 
+                src={img.image?.asset ? urlFor(img.image).url() : img.url} 
+                alt={img.title || "Gallery"} 
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

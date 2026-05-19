@@ -3,14 +3,61 @@ import { ALL_DIVISIONS } from "../data/divisions";
 import { Container } from "../components/ui/Container";
 import { motion } from "framer-motion";
 import { ArrowLeft, ChevronRight, Shield, Target, Cpu, ExternalLink } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { sanityClient, urlFor } from "../lib/sanity";
 import { cn } from "../lib/utils";
 import { Button } from "../components/ui/Button";
 
 export const DivisionPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const division = ALL_DIVISIONS.find(d => d.id === id);
+  const [cmsDivision, setCmsDivision] = useState(null);
+
+  useEffect(() => {
+    const fetchDivision = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "roboticsDivision" && idName == $id][0] {
+            name,
+            active,
+            description,
+            images,
+            subdivisions
+          }`,
+          { id }
+        );
+        if (data) setCmsDivision(data);
+      } catch (error) {
+        console.error("Gagal mengambil data divisi dari Sanity:", error);
+      }
+    };
+    fetchDivision();
+  }, [id]);
+
+  const defaultDivision = ALL_DIVISIONS.find(d => d.id === id);
+  
+  // Merge: jika CMS punya data (termasuk array kosong, namun biasanya undefined jika tidak diisi), maka timpa
+  const division = defaultDivision ? { ...defaultDivision } : null;
+  if (division && cmsDivision) {
+    if (cmsDivision.name) division.name = cmsDivision.name;
+    if (cmsDivision.active !== undefined) division.active = cmsDivision.active;
+    if (cmsDivision.description) division.description = cmsDivision.description;
+    if (cmsDivision.images && cmsDivision.images.length > 0) division.images = cmsDivision.images;
+    
+    // Gabungkan subdivisions berdasarkan ID, atau replace jika CMS mengirim subdivision baru
+    if (cmsDivision.subdivisions && cmsDivision.subdivisions.length > 0) {
+      const mergedSubs = [...division.subdivisions];
+      cmsDivision.subdivisions.forEach(cmsSub => {
+        const matchIdx = mergedSubs.findIndex(s => s.id === (cmsSub.idName || cmsSub.id));
+        if (matchIdx >= 0) {
+          mergedSubs[matchIdx] = { ...mergedSubs[matchIdx], ...cmsSub };
+        } else {
+          mergedSubs.push({ id: cmsSub.idName, ...cmsSub });
+        }
+      });
+      division.subdivisions = mergedSubs;
+    }
+  }
 
 
 
@@ -96,7 +143,7 @@ export const DivisionPage = () => {
                   )}
                 >
                   <img 
-                    src={img} 
+                    src={img?.asset ? urlFor(img).url() : img} 
                     alt="" 
                     loading="lazy"
                     decoding="async"

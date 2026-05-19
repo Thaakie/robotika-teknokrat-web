@@ -3,13 +3,40 @@ import { ALL_DIVISIONS } from "../data/divisions";
 import { Container } from "../components/ui/Container";
 import { motion } from "framer-motion";
 import { ArrowLeft, Cpu, Target, Layers, Shield, Box } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { sanityClient, urlFor } from "../lib/sanity";
 import { Button } from "../components/ui/Button";
 
 export const SubDivisionPage = () => {
   const { id, subId } = useParams();
-  const division = ALL_DIVISIONS.find(d => d.id === id);
-  const subDivision = division?.subdivisions.find(s => s.id === subId);
+  const [cmsSubDivision, setCmsSubDivision] = useState(null);
+
+  useEffect(() => {
+    const fetchSubDivision = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "roboticsDivision" && idName == $id][0] {
+            subdivisions
+          }`,
+          { id }
+        );
+        if (data?.subdivisions) {
+          const matchedSub = data.subdivisions.find(s => s.idName === subId || s.id === subId);
+          if (matchedSub) setCmsSubDivision(matchedSub);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data sub-divisi dari Sanity:", error);
+      }
+    };
+    fetchSubDivision();
+  }, [id, subId]);
+
+  const baseDivision = ALL_DIVISIONS.find(d => d.id === id);
+  const baseSubDivision = baseDivision?.subdivisions.find(s => s.id === subId);
+  
+  // Merge data
+  const division = baseDivision;
+  const subDivision = baseSubDivision ? { ...baseSubDivision, ...cmsSubDivision } : null;
 
 
 
@@ -83,8 +110,8 @@ export const SubDivisionPage = () => {
                className="rounded-[20px] overflow-hidden aspect-[4/5] border border-white/10 group relative"
              >
                <img 
-                 src={`https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800`} 
-                 alt="Robot Spec" 
+                 src={subDivision.image?.asset ? urlFor(subDivision.image).url() : "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800"} 
+                 alt={subDivision.name} 
                  loading="lazy"
                  decoding="async"
                  className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105" 

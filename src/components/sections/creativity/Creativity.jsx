@@ -5,8 +5,37 @@ import { AnimatedSection } from "../../common/AnimatedSection";
 import { motion } from "framer-motion";
 import { Cpu, Settings, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { sanityClient, urlFor } from "../../../lib/sanity";
 
 export const Creativity = () => {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "project"] | order(_createdAt asc) {
+            id,
+            name,
+            division,
+            description,
+            image,
+            tech,
+            href
+          }`
+        );
+        setProjects(data);
+      } catch (error) {
+        console.error("Gagal mengambil data project dari Sanity:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  const displayProjects = projects.length > 0 ? projects : ROBOTS;
+
   return (
     <AnimatedSection id="creativity" className="py-24 bg-brand-navy/50 relative overflow-hidden">
       {/* Section Transitions */}
@@ -20,9 +49,9 @@ export const Creativity = () => {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {ROBOTS.map((robot, idx) => (
+          {displayProjects.map((robot, idx) => (
             <motion.div
-              key={robot.id}
+              key={robot.id || idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
@@ -31,7 +60,7 @@ export const Creativity = () => {
               {/* Image Container */}
               <div className="relative h-64 overflow-hidden">
                 <img 
-                  src={robot.image} 
+                  src={robot.image?.asset ? urlFor(robot.image).url() : robot.image} 
                   alt={robot.name} 
                   loading="lazy"
                   decoding="async"
@@ -39,9 +68,11 @@ export const Creativity = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-navy to-transparent opacity-60" />
                 <div className="absolute bottom-4 left-4">
-                   <span className="text-[10px] font-bold bg-brand-primary text-white px-3 py-1 rounded-full uppercase tracking-widest">
-                     {robot.division.split(' (')[0]}
-                   </span>
+                   {robot.division && (
+                     <span className="text-[10px] font-bold bg-brand-primary text-white px-3 py-1 rounded-full uppercase tracking-widest">
+                       {robot.division.split(' (')[0]}
+                     </span>
+                   )}
                 </div>
               </div>
 
@@ -62,7 +93,7 @@ export const Creativity = () => {
                      Technologies Used
                    </div>
                    <div className="flex flex-wrap gap-2">
-                     {robot.tech.map((t, i) => (
+                     {robot.tech?.map((t, i) => (
                        <span key={i} className="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded-md text-brand-gray">
                          {t}
                        </span>
