@@ -7,11 +7,13 @@ import { cn } from "../../lib/utils";
 import { ACTIVE_DIVISIONS, INACTIVE_DIVISIONS } from "../../data/divisions";
 import { ACHIEVEMENTS } from "../../data/achievements";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { sanityClient } from "../../lib/sanity";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [cmsAchievements, setCmsAchievements] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,8 +25,33 @@ export const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const fetchAchievements = async () => {
+      try {
+        const data = await sanityClient.fetch(
+          `*[_type == "achievement"] | order(year desc) {
+            year,
+            categories[]{
+              id,
+              name,
+              items[]{
+                title
+              }
+            }
+          }`
+        );
+        setCmsAchievements(data);
+      } catch (error) {
+        console.error("Gagal mengambil data achievement untuk Navbar:", error);
+      }
+    };
+    fetchAchievements();
+  }, []);
+
+  const displayAchievements = cmsAchievements.length > 0 ? cmsAchievements : ACHIEVEMENTS;
+
   const navLinks = [
-    { name: "Achievement", dropdown: true, data: ACHIEVEMENTS, href: "#achievement" },
+    { name: "Achievement", dropdown: true, data: displayAchievements, href: "#achievement" },
     { name: "Division", dropdown: true, data: ACTIVE_DIVISIONS, href: "#division" },
     { name: "About", dropdown: true, data: [
       { name: "Organization Structure", href: "/organization", isPage: true },
