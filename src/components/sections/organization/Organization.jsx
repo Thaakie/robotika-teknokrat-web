@@ -198,9 +198,9 @@ export const Organization = () => {
                   className="glass-card p-5 rounded-2xl"
                  >
                     <div className="flex items-center justify-between">
-                      <p className="text-brand-yellow font-bold text-lg">{dept.id.toUpperCase()}</p>
+                      <p className="text-brand-yellow font-bold text-lg">{dept.id?.toUpperCase() || ""}</p>
                       <div className="flex items-center gap-2">
-                        {dept.subs.map(sub => (
+                        {dept.subs?.map(sub => (
                           <span key={sub.name} className="text-[10px] bg-brand-primary/20 text-brand-primary px-3 py-1 rounded-full font-bold">
                             {sub.name}
                           </span>
@@ -216,9 +216,9 @@ export const Organization = () => {
         {/* View Full Button */}
         <div className="mt-20 text-center">
            <Link to="/organization">
-             <Button variant="outline" size="lg" className="group">
+             <Button variant="outline" size="lg" className="group hover:-translate-y-0.5 hover:border-brand-yellow/40 hover:shadow-[0_0_20px_rgba(255,204,0,0.15)] transition-all duration-300">
                View Full Management Structure
-               <ChevronRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
+               <ChevronRight size={20} className="ml-2 group-hover:translate-x-1.5 transition-transform duration-300" />
              </Button>
            </Link>
         </div>

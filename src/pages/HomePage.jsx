@@ -3,6 +3,7 @@ import { About } from "../components/sections/about/About";
 import { Achievement } from "../components/sections/achievement/Achievement";
 import { Division } from "../components/sections/division/Division";
 import { Creativity } from "../components/sections/creativity/Creativity";
+import { Organization } from "../components/sections/organization/Organization";
 import { Gallery } from "../components/sections/gallery/Gallery";
 
 export const HomePage = () => {
@@ -13,6 +14,7 @@ export const HomePage = () => {
       <Achievement />
       <Division />
       <Creativity />
+      <Organization />
       <Gallery />
     </>
   );
