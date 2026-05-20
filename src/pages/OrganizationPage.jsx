@@ -189,7 +189,7 @@ export const OrganizationPage = () => {
                     className="w-full h-full object-cover bg-brand-navy" 
                   />
                 </div>
-                <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-2">{member.role}</p>
+                <p className="text-[10px] font-bold text-brand-yellow uppercase tracking-widest mb-2">{member.role}</p>
                 <p className="text-xl font-bold text-white mb-1">{member.name}</p>
                 <div className="w-8 h-1 bg-brand-yellow mx-auto mt-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.div>
@@ -215,7 +215,7 @@ export const OrganizationPage = () => {
                     className="w-full h-full object-cover bg-brand-navy" 
                   />
                 </div>
-                <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-2">{member.role}</p>
+                <p className="text-[10px] font-bold text-brand-yellow uppercase tracking-widest mb-2">{member.role}</p>
                 <p className="text-xl font-bold text-white mb-1">{member.name}</p>
                 <div className="w-8 h-1 bg-brand-yellow mx-auto mt-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.div>
@@ -356,7 +356,7 @@ export const OrganizationPage = () => {
                      </div>
                    )}
                    <div>
-                     <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-1">Department Head</p>
+                     <p className="text-[10px] font-bold text-brand-yellow uppercase tracking-widest mb-1">Department Head</p>
                      <p className="text-white font-bold">{dept.head}</p>
                    </div>
                 </div>

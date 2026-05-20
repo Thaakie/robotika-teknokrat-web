@@ -142,7 +142,7 @@ export const Organization = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <p className="text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mb-1">{member.role}</p>
+                <p className="text-[10px] font-bold text-brand-yellow uppercase tracking-[0.2em] mb-1">{member.role}</p>
                 <p className="text-white font-bold">{member.name}</p>
               </motion.div>
             ))}
@@ -170,7 +170,7 @@ export const Organization = () => {
                     transition={{ delay: idx * 0.1 }}
                     className="glass p-4 rounded-xl flex items-center gap-4 hover:border-brand-primary/30 transition-all"
                   >
-                    <div className="text-brand-primary">
+                    <div className="text-brand-yellow">
                       <Icon size={20} />
                     </div>
                     <p className="text-sm font-semibold text-white">{div.name}</p>
